@@ -13,10 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import javax.annotation.Resource;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -79,13 +76,33 @@ class CountryServiceImplTest {
     @Test
     void getCountriesWithPaginationTest(){
 
-        Map<String, String> params = new HashMap<>();
+        TreeMap<String, Object> params = new TreeMap<>();
         params.put("search", "ea");
         params.put("continent", "Asia");
         params.put("region", "Eastern Asia");
         params.put("pageNo", "0");
 
-        Optional<List<Country>> result = countryServiceImpl.getCountries(params);
+        Optional<List<Country>> result = Optional.ofNullable(countryServiceImpl.getCountries(params));
+
+        log.info("Query result --> {}", result.get().size());
+        log.info("Query result --> {}", result.get().toString());
+
+        assertThat(result.get().size()).isGreaterThan(0);
+
+
+
+    }
+
+    @Test
+    void getCountriesWithNullParamValuesTest(){
+
+        TreeMap<String, Object> params = new TreeMap<>();
+        params.put("search", null);
+        params.put("continent", null);
+        params.put("region", null);
+        params.put("pageNo", null);
+
+        Optional<List<Country>> result = Optional.ofNullable(countryServiceImpl.getCountries(params));
 
         log.info("Query result --> {}", result.get().size());
         log.info("Query result --> {}", result.get().toString());

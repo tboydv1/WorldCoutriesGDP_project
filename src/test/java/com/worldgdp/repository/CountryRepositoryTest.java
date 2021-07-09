@@ -119,5 +119,35 @@ class CountryRepositoryTest {
     }
 
 
+    @Test
+    public void getCountriesCountTest(){
+        int countriesCount = countryRepository.
+                getCountriesCount("ea".toLowerCase(), "Asia", "Eastern Asia");
+        log.info("Size of countries --> {}", countriesCount);
+        assertThat(countriesCount).isEqualTo(2);
+
+    }
+
+    @Test
+    public void getCountriesContinent(){
+        Optional<List<String>> continents = countryRepository.
+                getContinents();
+        log.info("Size of countries --> {}", continents);
+        assertThat(continents.isPresent());
+        assertThat(continents.get().contains("Asia")).isTrue();
+        assertThat(continents.get().size()).isEqualTo(7);
+    }
+
+    @Test
+    public void getRegions(){
+        Optional<List<String>> regions = countryRepository.
+                getRegions();
+        log.info("Size of countries --> {}", regions);
+        assertThat(regions.isPresent()).isTrue();
+        assertThat(regions.get().contains("Eastern Asia")).isTrue();
+    }
+
+
+
 
 }

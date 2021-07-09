@@ -11,6 +11,7 @@ public interface CityRepository extends PagingAndSortingRepository<City, Long> {
 
     List<City> findByCountryCode(String countryCode, Pageable pageable);
 
+    List<City> findByCountryCode(String countryCode);
 
 
 

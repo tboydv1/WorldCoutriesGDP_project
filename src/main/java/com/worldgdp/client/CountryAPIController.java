@@ -2,7 +2,6 @@ package com.worldgdp.client;
 
 import com.worldgdp.models.Country;
 import com.worldgdp.models.dto.CountryDto;
-import com.worldgdp.repository.CountryRepository;
 import com.worldgdp.service.CountryService;
 import com.worldgdp.service.WorlBankApiClient;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +11,10 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.Resource;
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 @RestController
 @RequestMapping("/api/countries")
@@ -35,7 +33,7 @@ public class CountryAPIController {
                                           @RequestParam(name = "region", required = false) String region,
                                           @RequestParam(name = "pageNo", required = false) Integer pageNo){
 
-        Map<String, String> params = new HashMap<>();
+        Map<String, Object> params = new TreeMap<>();
         params.put("search", searchTerm);
         params.put("continent", continent);
         params.put("region", region);

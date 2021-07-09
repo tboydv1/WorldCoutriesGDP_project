@@ -44,6 +44,36 @@ public class CountryBaseRepositoryImpl<T, ID extends Serializable> extends Simpl
     }
 
     @Override
+    public Optional<List<String>> getContinents() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<List<String>> getRegions() {
+        return Optional.empty();
+    }
+
+    @Override
+    public int getCountriesCount(String search, String continent, String region) {
+        return 0;
+    }
+
+    @Override
+    public int getCountriesCount() {
+        return 0;
+    }
+
+    @Override
+    public Optional<List<String>> getGovernmentTypes() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<List<String>> getHeadOfStates() {
+        return null;
+    }
+
+    @Override
     public List<T> findByContinent(String continent, Pageable pageable) {
         return null;
     }

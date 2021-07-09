@@ -5,20 +5,28 @@ import com.worldgdp.models.dto.CountryDto;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface CountryService {
 
-    List<Country> getCountries(Map<String, String> params);
+    List<Country> getCountries(Map<String, Object> params);
 
-    List<Country> getCountryByName(String name);
+    List<Country> findByName(String name);
 
-    List<Country> getCountryContinent(String continent);
+    List<Country> findByContinent(String continent);
 
-    Country getCountryByCode(String code);
+    Country findByCode(String code);
 
     Country editCountry(String countryCode, CountryDto country) throws Exception;
 
 
+    List<String> getContinents();
+
+    List<String> getRegions();
+
+    int getCountriesCount(Map<String, Object> params);
+
+    List<String> getGovernmentTypes();
+
+    List<String> getHeadOfStates();
 
 }
