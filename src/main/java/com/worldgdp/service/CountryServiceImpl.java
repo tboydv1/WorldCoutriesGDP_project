@@ -5,12 +5,14 @@ import com.worldgdp.models.dto.CountryDto;
 import com.worldgdp.repository.CountryRepository;
 import com.worldgdp.service.util.CountryMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -19,15 +21,17 @@ import java.util.Optional;
 @Slf4j
 public class CountryServiceImpl implements CountryService {
 
+
     @Resource
     CountryRepository countryRepository;
 
+    @Autowired
     CountryMapper countryMapper;
 
-    private static final int PAGE_SIZE = 1;
+    private static final int PAGE_SIZE = 10;
 
     @Override
-    public Optional<List<Country>> getCountries(Map<String, String> params) {
+    public List<Country> getCountries(Map<String, String> params) {
 
         log.info("Entering get countries method --> {}", params);
         int pageNo = 1;
@@ -37,12 +41,14 @@ public class CountryServiceImpl implements CountryService {
 
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
 
-        return countryRepository.findCountries(
+        Optional<List<Country>> result = countryRepository.findCountries(
                 StringUtils.hasText(params.get("search")) ? params.get("search"): "",
-                StringUtils.hasText(params.get("continent")) ? params.get("search"): "",
-                StringUtils.hasText(params.get("region")) ? params.get("search"): "",
+                StringUtils.hasText(params.get("continent")) ? params.get("continent"): "",
+                StringUtils.hasText(params.get("region")) ? params.get("region"): "",
                 pageable
                 );
+
+        return result.orElse(Collections.emptyList());
     }
 
     @Override

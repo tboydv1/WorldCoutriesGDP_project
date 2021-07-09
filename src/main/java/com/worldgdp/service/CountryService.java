@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface CountryService {
 
-    Optional<List<Country>> getCountries(Map<String, String> params);
+    List<Country> getCountries(Map<String, String> params);
 
     List<Country> getCountryByName(String name);
 

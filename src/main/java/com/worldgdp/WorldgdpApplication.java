@@ -11,11 +11,12 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import javax.persistence.Entity;
 
 @EntityScan("com.worldgdp.models")
-@EnableJpaRepositories(basePackages = "com.worldgdp.repository")
+@EnableJpaRepositories(basePackages = "com.worldgdp.*")
 @SpringBootApplication
 public class WorldgdpApplication {
 
 	public static void main(String[] args) {
+
 		SpringApplication.run(WorldgdpApplication.class, args);
 	}
 

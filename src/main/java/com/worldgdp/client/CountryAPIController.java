@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.validation.Valid;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,18 +35,19 @@ public class CountryAPIController {
                                           @RequestParam(name = "region", required = false) String region,
                                           @RequestParam(name = "pageNo", required = false) Integer pageNo){
 
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, String> params = new HashMap<>();
         params.put("search", searchTerm);
         params.put("continent", continent);
         params.put("region", region);
         if(pageNo != null)
             params.put("pageNo", pageNo.toString());
 
+        List<Country> countryList = countryService.getCountries(params);
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("list", countryList);
 
-        //logic
-
-        return null;
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping(value = "/{countryCode}", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -65,7 +67,7 @@ public class CountryAPIController {
     }
 
     @GetMapping("/{countryCode}/gdp")
-    public ResponseEntity getGDP(@PathVariable String countryCode){
+    public ResponseEntity<?> getGDP(@PathVariable String countryCode){
 
         //logic
         try {

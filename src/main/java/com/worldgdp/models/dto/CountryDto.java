@@ -12,6 +12,7 @@ public class CountryDto {
     private String name;
     private String continent;
     private Double surfaceArea;
+    private String region;
     private Short indepYear;
     private Long population;
     private Double lifeExpectancy;

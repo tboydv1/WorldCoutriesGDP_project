@@ -101,7 +101,7 @@ class CountryRepositoryTest {
 
         assertFalse(countriesBySearch.isEmpty());
 //        assertThat(countriesBySearch.get().get(0).getName().toLowerCase().contains("no"));
-        assertThat(countriesBySearch.get().size()).isEqualTo(5);
+        assertThat(countriesBySearch.get().size()).isEqualTo(2);
 
     }
 
@@ -109,14 +109,11 @@ class CountryRepositoryTest {
     @Test
     public void findBySearchTermAndContinentTest(){
 
-        Pageable firstPage = PageRequest.of(1, 1);
+        Pageable firstPage = PageRequest.of(0, 5);
 
         Optional<List<Country>> countriesBySearch = countryRepository.
-                findCountries("No".toLowerCase(), "Asia", "Eastern Asia", firstPage);
-        log.info("Size of countries --> {}", countriesBySearch);
-
-        assertFalse(countriesBySearch.isEmpty());
-
+                findCountries("ea".toLowerCase(), "Asia", "Eastern Asia", firstPage);
+        log.info("Size of countries --> {}", countriesBySearch.get().size());
 
 
     }
