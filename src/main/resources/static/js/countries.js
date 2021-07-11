@@ -19,12 +19,17 @@ $(function(){
 		var key = $(e.target).attr("name");
 		var value = $(e.target).val();
 		handleSearch(key, value);
+		console.log(key + ", " + value);
+		console.log("current path --> {}"+location.href)
+		console.log("query string --> "+ queryString[key])
 	});
+
+
 	
 });
 
 function handleSearch(key, value){
-	//console.log(key + ", " + value);
+
 	if ( value){
 		queryString[key] = value;
 	}else{
@@ -34,6 +39,7 @@ function handleSearch(key, value){
 }
 
 function reloadPage(){
+
 	location.href = location.pathname + "?" + $.param(queryString);
 }
 

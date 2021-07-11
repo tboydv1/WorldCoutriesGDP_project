@@ -1,5 +1,6 @@
 package com.worldgdp.repository;
 
+import com.worldgdp.models.Country;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -8,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @NoRepositoryBean
@@ -19,11 +21,30 @@ public interface CountryBaseRepository<T, ID extends Serializable> extends JpaRe
 
     T findByCode(String code);
 
+    /**
+     *
+     * @param search
+     * @param pageable
+     * @return
+     */
     @Query(value = "select c from Country c where lower(c.name) like %:search%")
     Optional<List<T>> findBySearch(@Param("search") String search, Pageable pageable);
 
-    @Query("select c from Country c where lower(c.name) like %:search% and c.continent = :continent and c.region = :region")
-    Optional<List<T>> findCountries(String search, String continent, String region, Pageable pageable);
+    /**
+     * Query values from db, ignoring null values
+     * @param search
+     * @param continent
+     * @param region
+     * @return
+     */
+    @Query("select c " +
+            "from Country c " +
+            "where (lower(c.name) like %:search% or :search is null) " +
+            "and (c.continent = :continent or :continent is null)" +
+            "and (c.region = :region or :region is null)")
+    Optional<List<T>> findCountries(String search, String continent, String region);
+
+
 
     @Query("select distinct c.continent as ct from Country c order by ct")
     Optional<List<String>> getContinents();
@@ -31,7 +52,11 @@ public interface CountryBaseRepository<T, ID extends Serializable> extends JpaRe
     @Query("select distinct c.region as r from Country c order by r")
     Optional<List<String>> getRegions();
 
-    @Query("select count(c) from Country c where lower(c.name) like %:search% and c.continent = :continent and c.region = :region")
+    @Query("select count(c) " +
+            "from Country c " +
+            "where (lower(c.name) like %:search% or :search is null) " +
+            "and (c.continent = :continent or :continent is null)" +
+            "and (c.region = :region or :region is null)")
     int getCountriesCount(String search, String continent, String region);
 
     @Query("select count(c) from Country c")

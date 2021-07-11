@@ -11,10 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @Slf4j
@@ -44,9 +46,9 @@ public class CountryServiceImpl implements CountryService {
         log.info("Entering get countries method --> {}", params);
         int pageNo = 1;
 
-        if(params.get("search") == null && params.get("continent") == null && params.get("region") == null){
-            return countryRepository.findAll();
-        }
+//        if(params.get("search") == null && params.get("continent") == null && params.get("region") == null){
+//            return countryRepository.findAll();
+//        }
 
         if(params.containsKey("pageNo"))
             pageNo = Integer.parseInt(params.get("pageNo").toString());
@@ -54,10 +56,9 @@ public class CountryServiceImpl implements CountryService {
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
 
         Optional<List<Country>> result = countryRepository.findCountries(
-                StringUtils.hasText(params.get("search").toString()) ? params.get("search").toString(): "",
-                StringUtils.hasText(params.get("continent").toString()) ? params.get("continent").toString(): "",
-                StringUtils.hasText(params.get("region").toString()) ? params.get("region").toString(): "",
-                pageable
+                !(params.get("search") == null) ? params.get("search").toString() : null,
+                !(params.get("continent") == null) ? params.get("continent").toString() : null,
+                !(params.get("region") == null) ? params.get("region").toString() : null
         );
 
 
@@ -122,9 +123,9 @@ public class CountryServiceImpl implements CountryService {
         }
 
         return countryRepository.getCountriesCount(
-                StringUtils.hasText(params.get("search").toString()) ? params.get("search").toString(): "",
-                StringUtils.hasText(params.get("continent").toString()) ? params.get("continent").toString(): "",
-                StringUtils.hasText(params.get("region").toString()) ? params.get("region").toString(): "");
+                !(params.get("search") == null) ? params.get("search").toString() : "",
+                !(params.get("continent") == null) ? params.get("continent").toString() : "",
+                !(params.get("region") == null) ? params.get("region").toString() : "");
     }
 
     @Override

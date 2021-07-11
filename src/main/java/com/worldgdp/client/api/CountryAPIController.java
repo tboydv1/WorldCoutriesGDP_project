@@ -1,4 +1,4 @@
-package com.worldgdp.client;
+package com.worldgdp.client.api;
 
 import com.worldgdp.models.Country;
 import com.worldgdp.models.dto.CountryDto;
@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 @RestController
-@RequestMapping("/api/countries")
+@RequestMapping("/worldgdp/api/countries")
 @Slf4j
 public class CountryAPIController {
 
@@ -37,6 +37,7 @@ public class CountryAPIController {
         params.put("search", searchTerm);
         params.put("continent", continent);
         params.put("region", region);
+
         if(pageNo != null)
             params.put("pageNo", pageNo.toString());
 

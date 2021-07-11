@@ -1,19 +1,24 @@
 package com.worldgdp.repository;
 
 import com.worldgdp.WorldgdpApplication;
+import com.worldgdp.dao.mapper.CountryRowMapper;
 import com.worldgdp.models.Country;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.util.StringUtils;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -26,6 +31,43 @@ class CountryRepositoryTest {
 
     @Resource
     CountryRepository countryRepository;
+
+    @Autowired
+    NamedParameterJdbcTemplate namedParamJdbcTemplate;
+
+    private static final String SELECT_CLAUSE = "SELECT "
+            + "  	c.Code, "
+            + "		c.Name, "
+            + "		c.Continent, "
+            + "		c.region, "
+            + "		c.SurfaceArea surface_area, "
+            + "		c.IndepYear indep_year, "
+            + "		c.Population, "
+            + "		c.LifeExpectancy life_expectancy, "
+            + "		c.GNP, "
+            + "		c.LocalName local_name, "
+            + "		c.GovernmentForm government_form, "
+            + "		c.HeadOfState head_of_state, "
+            + "		c.code2 ,"
+            + "		c.capital ,"
+            + "		cy.name capital_name "
+            + " FROM country c"
+            + " LEFT OUTER JOIN city cy ON cy.id = c.capital ";
+
+    private static final String SEARCH_WHERE_CLAUSE = " AND ( LOWER(c.name) "
+            + "	LIKE CONCAT('%', LOWER(:search), '%') ) ";
+
+    private static final String CONTINENT_WHERE_CLAUSE =
+            " AND c.continent = :continent ";
+
+    private static final String REGION_WHERE_CLAUSE =
+            " AND c.region = :region ";
+
+    private static final String PAGINATION_CLAUSE = " ORDER BY c.code "
+            + "  LIMIT :offset , :size ";
+
+    private static final Integer PAGE_SIZE = 20;
+
 
     @BeforeEach
     void setUp() {
@@ -96,7 +138,7 @@ class CountryRepositoryTest {
     public void findCountryBySearchTermTest(){
         Pageable firstPage = PageRequest.of(1, 5);
 
-        Optional<List<Country>> countriesBySearch = countryRepository.findBySearch("No".toLowerCase(), firstPage);
+        Optional<List<Country>> countriesBySearch = countryRepository.findBySearch("No".toLowerCase(),  firstPage);
         log.info("Size of countries --> {}", countriesBySearch);
 
         assertFalse(countriesBySearch.isEmpty());
@@ -112,11 +154,42 @@ class CountryRepositoryTest {
         Pageable firstPage = PageRequest.of(0, 5);
 
         Optional<List<Country>> countriesBySearch = countryRepository.
-                findCountries("ea".toLowerCase(), "Asia", "Eastern Asia", firstPage);
-        log.info("Size of countries --> {}", countriesBySearch.get().size());
+                findCountries(null, "Asia", "Eastern Asia");
 
+        List<Country> savedCountries;
+
+        if(countriesBySearch.isPresent()) {
+            savedCountries = countriesBySearch.orElse(null);
+            log.info("Size of countries --> {}", savedCountries);
+        }
+
+        assertThat(countriesBySearch.get().size()).isEqualTo(8);
 
     }
+
+
+    @Test
+    public void findByAllRecordsWhenParamsNullTest(){
+
+        Pageable firstPage = PageRequest.of(0, 5);
+
+        Optional<List<Country>> countriesBySearch = countryRepository.
+                findCountries(null, null, null);
+
+        List<Country> savedCountries;
+
+        if(countriesBySearch.isPresent()) {
+            savedCountries = countriesBySearch.orElse(null);
+            log.info("Size of countries --> {}", savedCountries);
+        }
+
+        assertThat(countriesBySearch.get().size()).isEqualTo(239);
+
+    }
+
+
+
+
 
 
     @Test
@@ -145,6 +218,30 @@ class CountryRepositoryTest {
         log.info("Size of countries --> {}", regions);
         assertThat(regions.isPresent()).isTrue();
         assertThat(regions.get().contains("Eastern Asia")).isTrue();
+    }
+
+    @Test
+    public void getCountries(){
+        int pageNo = 1;
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("search", null);
+        params.put("continent", null);
+        params.put("region", "Antarctica");
+        Integer offset = (pageNo - 1) * PAGE_SIZE;
+
+        params.put("size", PAGE_SIZE);
+        params.put("offset", offset);
+
+        List<Country> result = namedParamJdbcTemplate.query(SELECT_CLAUSE
+                        + " WHERE 1 = 1 "
+                        + (!StringUtils.isEmpty((String)params.get("search")) ? SEARCH_WHERE_CLAUSE : "")
+                        + (!StringUtils.isEmpty((String)params.get("continent")) ? CONTINENT_WHERE_CLAUSE : "")
+                        + (!StringUtils.isEmpty((String)params.get("region")) ? REGION_WHERE_CLAUSE : "")
+                        + PAGINATION_CLAUSE,
+                params, new CountryRowMapper());
+        log.info("Result list --> {}", result);
+        assertThat(result.size()).isEqualTo(5);
     }
 
 
