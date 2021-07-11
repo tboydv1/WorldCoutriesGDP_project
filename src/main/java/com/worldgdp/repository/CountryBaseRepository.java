@@ -42,7 +42,7 @@ public interface CountryBaseRepository<T, ID extends Serializable> extends JpaRe
             "where (lower(c.name) like %:search% or :search is null) " +
             "and (c.continent = :continent or :continent is null)" +
             "and (c.region = :region or :region is null)")
-    Optional<List<T>> findCountries(String search, String continent, String region);
+    Optional<List<T>> findCountries(String search, String continent, String region, Pageable pageable);
 
 
 

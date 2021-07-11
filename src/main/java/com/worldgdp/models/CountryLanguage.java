@@ -16,12 +16,15 @@ public class CountryLanguage implements Serializable {
 
     @NotNull @Id
     private String countrycode;
+
     @Id
     @NotNull @Size(max = 30)
     private String language;
-    @NotNull private boolean isofficial;
-    @NotNull private Double percentage;
-    @OneToOne
-    private Country country;
+
+    @NotNull
+    private boolean isofficial;
+
+    @NotNull
+    private Double percentage;
 
 }

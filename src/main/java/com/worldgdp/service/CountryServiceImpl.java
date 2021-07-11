@@ -29,7 +29,7 @@ public class CountryServiceImpl implements CountryService {
     @Autowired
     CountryMapper countryMapper;
 
-    private static final int PAGE_SIZE = 10;
+    private static final int PAGE_SIZE = 20;
 
     ObjectMapper mapper;
 
@@ -44,24 +44,20 @@ public class CountryServiceImpl implements CountryService {
     public List<Country> getCountries(Map<String, Object> params) {
 
         log.info("Entering get countries method --> {}", params);
-        int pageNo = 1;
+        int pageNo = 0;
 
-//        if(params.get("search") == null && params.get("continent") == null && params.get("region") == null){
-//            return countryRepository.findAll();
-//        }
 
         if(params.containsKey("pageNo"))
-            pageNo = Integer.parseInt(params.get("pageNo").toString());
+            pageNo = Integer.parseInt(params.get("pageNo").toString()) - 1;
 
         Pageable pageable = PageRequest.of(pageNo, PAGE_SIZE);
 
         Optional<List<Country>> result = countryRepository.findCountries(
                 !(params.get("search") == null) ? params.get("search").toString() : null,
                 !(params.get("continent") == null) ? params.get("continent").toString() : null,
-                !(params.get("region") == null) ? params.get("region").toString() : null
+                !(params.get("region") == null) ? params.get("region").toString() : null,
+                pageable
         );
-
-
 
         return result.orElse(Collections.emptyList());
     }

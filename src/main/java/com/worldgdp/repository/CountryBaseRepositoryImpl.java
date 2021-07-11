@@ -78,7 +78,7 @@ public class CountryBaseRepositoryImpl<T, ID extends Serializable> extends Simpl
     }
 
     @Override
-    public Optional<List<T>> findCountries(String search, String continent, String region) {
+    public Optional<List<T>> findCountries(String search, String continent, String region, Pageable pageable) {
         return Optional.empty();
     }
 

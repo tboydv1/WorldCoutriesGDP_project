@@ -42,7 +42,6 @@ public class    Country {
     private String governmentForm;
     @Column(name = "headofstate" )
     private String headOfState;
-
     @OneToOne()
     @JoinColumn(name = "capital")
     private City capital;

@@ -151,10 +151,10 @@ class CountryRepositoryTest {
     @Test
     public void findBySearchTermAndContinentTest(){
 
-        Pageable firstPage = PageRequest.of(0, 5);
+        Pageable firstPage = PageRequest.of(0, 20);
 
         Optional<List<Country>> countriesBySearch = countryRepository.
-                findCountries(null, "Asia", "Eastern Asia");
+                findCountries(null, "Asia", "Eastern Asia", firstPage);
 
         List<Country> savedCountries;
 
@@ -171,10 +171,10 @@ class CountryRepositoryTest {
     @Test
     public void findByAllRecordsWhenParamsNullTest(){
 
-        Pageable firstPage = PageRequest.of(0, 5);
+        Pageable firstPage = PageRequest.of(0, 20);
 
         Optional<List<Country>> countriesBySearch = countryRepository.
-                findCountries(null, null, null);
+                findCountries(null, null, null, firstPage);
 
         List<Country> savedCountries;
 
@@ -183,7 +183,7 @@ class CountryRepositoryTest {
             log.info("Size of countries --> {}", savedCountries);
         }
 
-        assertThat(countriesBySearch.get().size()).isEqualTo(239);
+        assertThat(countriesBySearch.get().size()).isEqualTo(20);
 
     }
 
